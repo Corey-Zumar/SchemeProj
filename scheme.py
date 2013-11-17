@@ -59,7 +59,8 @@ def scheme_apply(procedure, args, env):
     if isinstance(procedure, PrimitiveProcedure):
         return apply_primitive(procedure, args, env)
     elif isinstance(procedure, LambdaProcedure):
-        "*** YOUR CODE HERE ***"
+        new_frame = procedure.env.make_call_frame(procedure.formals, args)
+        return scheme_eval(procedure.body, new_frame)
     elif isinstance(procedure, MuProcedure):
         "*** YOUR CODE HERE ***"
     else:
@@ -113,11 +114,10 @@ class Frame:
         """Return the value bound to SYMBOL.  Errors if SYMBOL is not found."""
         if symbol in self.bindings.keys():
             return self.bindings[symbol]
-        else:
-            try:
-                lookup(self.parent, symbol)
-            except Exception:
-                raise SchemeError("unknown identifier: {0}".format(str(symbol)))
+        try:
+            return self.parent.lookup(symbol)
+        except Exception as e:
+            raise SchemeError("unknown identifier: {0}".format(str(symbol)))
 
 
     def global_frame(self):
@@ -139,7 +139,12 @@ class Frame:
         <{a: 1, b: 2, c: 3} -> <Global Frame>>
         """
         frame = Frame(self)
-        "*** YOUR CODE HERE ***"
+        formals_length = len(formals)
+        if formals_length == len(vals):
+            for i in range(0, formals_length):
+                frame.define(formals[i], vals[i])
+        else:
+            raise SchemeError("Unequal number of formals and values")
         return frame
 
     def define(self, sym, val):
@@ -221,7 +226,7 @@ def do_define_form(vals, env):
     target = vals[0]
     if scheme_symbolp(target):
         check_form(vals, 2, 2)
-        env.define(target, vals[1])
+        env.define(target, scheme_eval(vals[1], env))
         return target
     elif isinstance(target, Pair):
         first = target.first
@@ -309,7 +314,7 @@ def do_begin_form(vals, env):
     """Evaluate begin form with parameters VALS in environment ENV."""
     check_form(vals, 1)
     length = len(vals)
-    for i in range(0, length):
+    for i in range(0, length - 1):
         scheme_eval(vals[i], env)
     return vals[length - 1]
     
@@ -336,6 +341,14 @@ def check_form(expr, min, max = None):
     elif max is not None and length > max:
         raise SchemeError("too many operands in form")
 
+def check_symbols(formals):
+    previous_symbols = []
+    for i in range(0, len(formals)):
+        symbol = formals[i]
+        if symbol in previous_symbols or scheme_symbolp(symbol) == False:
+            raise SchemeError("Duplicate or invalid symbols!")
+        previous_symbols.append(symbol)
+
 def check_formals(formals):
     """Check that FORMALS is a valid parameter list, a Scheme list of symbols
     in which each symbol is distinct. Raise a SchemeError if the list of formals
@@ -343,7 +356,7 @@ def check_formals(formals):
 
     >>> check_formals(read_line("(a b c)"))
     """
-    "*** YOUR CODE HERE ***"
+    return check_symbols(formals)
 
 ##################
 # Tail Recursion #
