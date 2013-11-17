@@ -317,10 +317,15 @@ def do_cond_form(vals, env):
             test = True
             if clause.second is nil:
                 raise SchemeError("badly formed else clause")
+            return clause.second.first
         else:
             test = scheme_eval(clause.first, env)
-        if scheme_true(test):
-            "*** YOUR CODE HERE ***"
+            if scheme_true(test):
+                if len(clause.second) > 1:
+                    return Pair("begin", clause.second) 
+                elif len(clause.second) == 0:
+                    return quote(test)
+                return clause.second.first
     return okay
 
 def do_begin_form(vals, env):
