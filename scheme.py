@@ -225,9 +225,12 @@ def do_define_form(vals, env):
         return target
     elif isinstance(target, Pair):
         first = target.first
-        vals.first = target.second
-        env.define(first, do_lambda_form(vals, env))
-        return target.first
+        if scheme_symbolp(first):
+            vals.first = target.second
+            env.define(first, do_lambda_form(vals, env))
+            return target.first
+        else:
+            raise SchemeError("bad function name")
     else:
         raise SchemeError("bad argument to define")
 
@@ -306,7 +309,7 @@ def do_begin_form(vals, env):
     """Evaluate begin form with parameters VALS in environment ENV."""
     check_form(vals, 1)
     length = len(vals)
-    for i in range(0, length - 1):
+    for i in range(0, length):
         scheme_eval(vals[i], env)
     return vals[length - 1]
     
