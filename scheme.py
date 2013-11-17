@@ -242,7 +242,7 @@ def do_define_form(vals, env):
 def do_quote_form(vals):
     """Evaluate a quote form with parameters VALS."""
     check_form(vals, 1, 1)
-    return vals[0]
+    return vals.first
 
 
 def do_let_form(vals, env):
@@ -272,11 +272,20 @@ def do_let_form(vals, env):
 def do_if_form(vals, env):
     """Evaluate if form with parameters VALS in environment ENV."""
     check_form(vals, 2, 3)
-    "*** YOUR CODE HERE ***"
+    condition = scheme_eval(vals[0], env)
+    if scheme_true(condition):
+        return scheme_eval(vals[1], env)
+    try:
+        return scheme_eval(vals[2], env)
+    except IndexError:
+        return okay
 
 def do_and_form(vals, env):
     """Evaluate short-circuited and with parameters VALS in environment ENV."""
-    "*** YOUR CODE HERE ***"
+    for i in range(0, len(vals)):
+        if scheme_false(scheme_eval(vals[i], env)):
+            return False
+    return True
 
 def quote(value):
     """Return a Scheme expression quoting the Scheme VALUE.
@@ -291,7 +300,11 @@ def quote(value):
 
 def do_or_form(vals, env):
     """Evaluate short-circuited or with parameters VALS in environment ENV."""
-    "*** YOUR CODE HERE ***"
+    for i in range(0, len(vals)):
+        evaluation = scheme_eval(vals[i], env)
+        if scheme_true(evaluation):
+            return vals[i]
+    return False
 
 def do_cond_form(vals, env):
     """Evaluate cond form with parameters VALS in environment ENV."""
