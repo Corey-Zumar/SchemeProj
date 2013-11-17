@@ -225,9 +225,9 @@ def do_define_form(vals, env):
         return target
     elif isinstance(target, Pair):
         first = target.first
-        vals[0] = target.second
-        print(do_lambda_form(vals, env))
+        vals.first = target.second
         env.define(first, do_lambda_form(vals, env))
+        return target.first
     else:
         raise SchemeError("bad argument to define")
 
