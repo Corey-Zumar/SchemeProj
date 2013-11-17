@@ -62,7 +62,7 @@ def scheme_apply(procedure, args, env):
         new_frame = procedure.env.make_call_frame(procedure.formals, args)
         return scheme_eval(procedure.body, new_frame)
     elif isinstance(procedure, MuProcedure):
-        "*** YOUR CODE HERE ***"
+        return scheme_eval(procedure.body, env)
     else:
         raise SchemeError("Cannot call {0}".format(str(procedure)))
 
@@ -219,6 +219,10 @@ def do_mu_form(vals):
     formals = vals[0]
     check_formals(formals)
     "*** YOUR CODE HERE ***"
+    if len(vals) == 2:
+        return MuProcedure(formals, vals[1])
+    else:
+        return MuProcedure(formals, Pair("begin", vals.second))
 
 def do_define_form(vals, env):
     """Evaluate a define form with parameters VALS in environment ENV."""
@@ -255,8 +259,11 @@ def do_let_form(vals, env):
 
     # Add a frame containing bindings
     names, values = nil, nil
-    "*** YOUR CODE HERE ***"
+    for i in bindings:
+        names = Pair(i[0], names)
+        values = Pair(scheme_eval(i[1], env), values)
     new_env = env.make_call_frame(names, values)
+
 
     # Evaluate all but the last expression after bindings, and return the last
     last = len(exprs)-1
