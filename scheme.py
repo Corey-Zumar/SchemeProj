@@ -62,7 +62,8 @@ def scheme_apply(procedure, args, env):
         new_frame = procedure.env.make_call_frame(procedure.formals, args)
         return scheme_eval(procedure.body, new_frame)
     elif isinstance(procedure, MuProcedure):
-        return scheme_eval(procedure.body, env)
+        new_frame = env.make_call_frame(procedure.formals, args)
+        return scheme_eval(procedure.body, new_frame)
     else:
         raise SchemeError("Cannot call {0}".format(str(procedure)))
 
