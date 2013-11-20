@@ -173,7 +173,7 @@ def read_tail(src):
                 src.pop()
                 return next
             else:
-                raise SyntaxError('You fail')
+                raise SyntaxError('unexpected token {0}'.format(src.current()))
         first = scheme_read(src)
         rest = read_tail(src)
         return Pair(first, rest)

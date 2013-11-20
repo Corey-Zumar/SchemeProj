@@ -68,8 +68,32 @@
 ;; A list of all ways to partition TOTAL, where  each partition must
 ;; be at most MAX-VALUE and there are at most MAX-PIECES partitions.
 (define (list-partitions total max-pieces max-value)
-  ; *** YOUR CODE HERE ***
-  nil)
+  (cond 
+    ((> 0 total) nil)
+    ((= total 0) nil)
+    ((= max-value 0) nil)
+    (else (filter remove-nils (append (make-partitions (- total max-value) max-value (- max-pieces 1) (list max-value)) (list-partitions total max-pieces (- max-value 1)))))
+  )
+  )
+(define (remove-nils obj)
+  (if (null? obj)
+      nil
+      obj
+    )
+
+  )
+
+(define (make-partitions total value pieces partitions)
+  (cond 
+    ((= total 0) (list partitions))
+    ((= value 0) nil)
+    ((= pieces 0) nil)
+    ((or (> value total)) (make-partitions total (- value 1) pieces partitions))
+    (else (append (make-partitions (- total value) value (- pieces 1) (append partitions (list value))) (make-partitions total (- value 1) pieces partitions)))
+
+    )
+
+  )
 
 ; Problem 19 tests rely on correct Problem 18.
 (sort-lists (list-partitions 5 2 4))
@@ -113,9 +137,28 @@
 
 ;; Takes a TREE of numbers and outputs a list of sums from following each
 ;; possible path from root to leaf.
+
+(define (flatten lst)
+  (cond 
+    ((null? lst) nil)
+    ((integer? lst) (list lst))
+    (else (append (flatten (car lst)) (flatten (cdr lst))))
+
+    )
+)
+
+
 (define (tree-sums tree)
-  ; *** YOUR CODE HERE ***
-  nil)
+  (cond
+
+    ((null? (children tree)) (list(entry tree)))
+    (else 
+      (map (lambda x (+ x (entry tree))) (flatten (tree-sums (children tree))))
+
+    )
+    )
+)
+
 
 (tree-sums tree)
 ; expect (20 19 13 16 11)

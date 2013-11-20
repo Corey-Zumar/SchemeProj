@@ -282,9 +282,9 @@ def do_if_form(vals, env):
     check_form(vals, 2, 3)
     condition = scheme_eval(vals[0], env)
     if scheme_true(condition):
-        return scheme_eval(vals[1], env)
+        return vals[1]
     try:
-        return scheme_eval(vals[2], env)
+        return vals[2]
     except IndexError:
         return okay
 
@@ -333,7 +333,7 @@ def do_cond_form(vals, env):
                     return Pair("begin", clause.second) 
                 elif len(clause.second) == 0:
                     return quote(test)
-                return clause.second.first
+                return clause[1]
     return okay
 
 def do_begin_form(vals, env):
