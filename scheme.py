@@ -311,7 +311,7 @@ def do_or_form(vals, env):
     for i in range(0, len(vals)):
         evaluation = scheme_eval(vals[i], env)
         if scheme_true(evaluation):
-            return vals[i]
+            return quote(evaluation)
     return False
 
 def do_cond_form(vals, env):

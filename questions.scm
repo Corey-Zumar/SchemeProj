@@ -72,15 +72,8 @@
     ((> 0 total) nil)
     ((= total 0) nil)
     ((= max-value 0) nil)
-    (else (filter remove-nils (append (make-partitions (- total max-value) max-value (- max-pieces 1) (list max-value)) (list-partitions total max-pieces (- max-value 1)))))
+    (else (append (make-partitions (- total max-value) max-value (- max-pieces 1) (list max-value)) (list-partitions total max-pieces (- max-value 1))))
   )
-  )
-(define (remove-nils obj)
-  (if (null? obj)
-      nil
-      obj
-    )
-
   )
 
 (define (make-partitions total value pieces partitions)
@@ -150,12 +143,9 @@
 
 (define (tree-sums tree)
   (cond
+    ((null? (children tree)) (entry tree))
+    (else (map (lambda x (+ x (entry tree))) (flatten (tree-sums (children tree)))))
 
-    ((null? (children tree)) (list(entry tree)))
-    (else 
-      (map (lambda x (+ x (entry tree))) (flatten (tree-sums (children tree))))
-
-    )
     )
 )
 
