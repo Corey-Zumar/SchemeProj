@@ -12,6 +12,24 @@
 125
 ; expect 125
 
+(= 2)
+; expect Error
+
+(< 5)
+; expect Error
+
+(> 0)
+; expect Error
+
+(/ 1)
+; expect Error
+
+(+ 2)
+; expect 2
+
+(- 2)
+; expect -2
+
 (< 5 0)
 ; expect False
 
@@ -39,6 +57,7 @@
 (= (+ 2 3) 5)
 ; expect True
 
+
 (not #t)
 ; expect False
 
@@ -54,6 +73,38 @@
 (eq? 'hi 'hi)
 ; expect True
 
+(eq? 2 2)
+; expect True
+
+(eq? (cons 1 (cons 2 nil)) (cons 1 (cons 2 nil)))
+; expect True
+
+(eq? '(1 2 3) '(1 2 3))
+; expect True
+
+(equal? 1 1)
+; expect True
+
+(equal? 2 2)
+; expect True
+
+(equal? '(1 2) '(1 2 3))
+; expect False
+
+(equal? (cons 1 (cons 2 nil)) (cons 1 (cons 2 nil)))
+; expect True
+
+(null? 2)
+; expect False
+
+(null? (cons 1 (cons 2 nil)))
+; expect False
+
+(null? nil)
+; expect True
+
+(null? 'hi)
+; expect False
 
 
 ;;;Q5
@@ -71,6 +122,12 @@ z
 
 (+ q (* (car z) q) (car z))
 ; expect 55
+
+(define x 27)
+; expect x
+
+(eq? q x)
+; expect True
 
 
 ;;;Q6
@@ -171,13 +228,13 @@ sum_one
 ;;;Q14
 
 (and 1 2 3)
-; expect True
+; expect 3
 
 (or 1 2 3)
 ; expect 1
 
 (and (= 2 2) 0)
-; expect True
+; expect 0
 
 (and (= 1 2) (> 3 2) (< 3 4))
 ; expect False
@@ -189,13 +246,16 @@ sum_one
 ; expect Error
 
 (and (/ 1 1) (+ 2 3) (+ 3 4))
-; expect True
+; expect 7
+
+(and (> 2 1) (= 2 2) (> 3 5))
+; expect False
 
 (and (cons 1 (cons 2 nil)) (cons 1 (cons 3 nil)))
-; expect True
+; expect (1 3)
 
 (and (cons 1 2) 3)
-; expect True
+; expect 3
 
 (or (= 5 5) (> 3 2) (/ 1 0))
 ; expect True
@@ -213,6 +273,10 @@ sum_one
 ; expect (1 . 2)
 
 ;;;Q15
+(cond ((= 3 3) (define x 10))
+      ((> 2 4) (* 3 3))
+      (else 1))
+; expect x
 
 (cond ((= 3 2) (+ 1 2))
       ((> 2 5) (* 3 5))
@@ -286,7 +350,17 @@ sum_one
 (g 3 7)
 ; expect 13
 
+(define z (lambda (x y) (f (* x x))))
+; expect z
 
+(z 1 2)
+; expect 3
+
+(define h (lambda (x y) (+ x x (f x))))
+; expect h
+
+(h 3 4)
+; expect 13
 
 
 
@@ -454,8 +528,6 @@ circumference
 (sqrt (+ 100 37))
 ; expect 11.704699917758145
 
-
-(exit)
 
 
 (sqrt (+ (sqrt 2) (sqrt 3)))
@@ -875,3 +947,7 @@ one-through-four
     (sum (- n 1) (+ n total))))
 (sum 1001 0)
 ; expect 501501
+
+
+(exit)
+
