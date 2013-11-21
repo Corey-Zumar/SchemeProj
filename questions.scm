@@ -143,10 +143,20 @@
 
 (define (tree-sums tree)
   (cond
-    ((null? (children tree)) (entry tree))
-    (else (map (lambda x (+ x (entry tree))) (flatten (tree-sums (children tree)))))
+    ((null? (children tree)) (list (entry tree)))
+    (else (map (lambda x (+ x (entry tree))) (flatten (sum-helper (children tree)))))
 
     )
+)
+
+(define (sum-helper tree)
+  (if (null? (children tree))
+    (tree-sums (entry tree))
+    (cons (tree-sums (entry tree)) (flatten (sum-helper (children tree))))
+
+    )
+
+
 )
 
 
