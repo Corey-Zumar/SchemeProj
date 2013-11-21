@@ -152,7 +152,7 @@
 (define (sum-helper tree)
   (if (null? (children tree))
     (tree-sums (entry tree))
-    (cons (tree-sums (entry tree)) (flatten (sum-helper (children tree))))
+    (cons (tree-sums (entry tree)) (sum-helper (children tree)))
 
     )
 

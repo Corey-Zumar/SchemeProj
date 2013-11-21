@@ -291,8 +291,11 @@ def do_if_form(vals, env):
 def do_and_form(vals, env):
     """Evaluate short-circuited and with parameters VALS in environment ENV."""
     for i in range(0, len(vals)):
-        if scheme_false(scheme_eval(vals[i], env)):
+        evaluation = scheme_eval(vals[i], env)
+        if scheme_false(evaluation):
             return False
+        elif i == len(vals) - 1:
+            return quote(evaluation)
     return True
 
 def quote(value):
@@ -390,6 +393,7 @@ def check_formals(formals):
 
 def scheme_optimized_eval(expr, env):
     """Evaluate Scheme expression EXPR in environment ENV."""
+    cache_procedure = False
     while True:
         if expr is None:
             raise SchemeError("Cannot evaluate an undefined expression.")
@@ -408,7 +412,7 @@ def scheme_optimized_eval(expr, env):
         # Evaluate Combinations
         if (scheme_symbolp(first) # first might be unhashable
             and first in LOGIC_FORMS):
-            "*** YOUR CODE HERE ***"
+            expr = LOGIC_FORMS[first](rest, env)
         elif first == "lambda":
             return do_lambda_form(rest, env)
         elif first == "mu":
@@ -418,14 +422,22 @@ def scheme_optimized_eval(expr, env):
         elif first == "quote":
             return do_quote_form(rest)
         elif first == "let":
-            "*** YOUR CODE HERE ***"
+            expr, env = do_let_form(rest, env)
         else:
-            "*** YOUR CODE HERE ***"
+            procedure = scheme_eval(first, env)
+            args = rest.map(lambda operand: scheme_eval(operand, env))
+            if isinstance(procedure, LambdaProcedure):
+                env = procedure.env.make_call_frame(procedure.formals, args)
+            elif isinstance(procedure, MuProcedure):
+                env = env.make_call_frame(procedure.formals, args)
+            else:
+                return scheme_apply(procedure, args, env)
+            expr = procedure.body
 
 ################################################################
 # Uncomment the following line to apply tail call optimization #
 ################################################################
-# scheme_eval = scheme_optimized_eval
+scheme_eval = scheme_optimized_eval
 
 
 ################
