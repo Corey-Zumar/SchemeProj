@@ -362,14 +362,6 @@ def check_form(expr, min, max = None):
     elif max is not None and length > max:
         raise SchemeError("too many operands in form")
 
-def check_symbols(formals):
-    previous_symbols = []
-    for i in range(0, len(formals)):
-        symbol = formals[i]
-        if symbol in previous_symbols or scheme_symbolp(symbol) == False:
-            raise SchemeError("Duplicate or invalid symbols!")
-        previous_symbols.append(symbol)
-
 def check_formals(formals):
     """Check that FORMALS is a valid parameter list, a Scheme list of symbols
     in which each symbol is distinct. Raise a SchemeError if the list of formals
@@ -377,7 +369,12 @@ def check_formals(formals):
 
     >>> check_formals(read_line("(a b c)"))
     """
-    return check_symbols(formals)
+    previous_symbols = []
+    for i in range(0, len(formals)):
+        symbol = formals[i]
+        if symbol in previous_symbols or scheme_symbolp(symbol) == False:
+            raise SchemeError("Duplicate or invalid symbols!")
+        previous_symbols.append(symbol)
 
 ##################
 # Tail Recursion #
