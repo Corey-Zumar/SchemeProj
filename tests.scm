@@ -522,6 +522,7 @@ circumference
         guess
         (sqrt-iter (improve guess))))
   (sqrt-iter 1.0))
+
 (sqrt 9)
 ; expect 3.00009155413138
 
