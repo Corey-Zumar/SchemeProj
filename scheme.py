@@ -67,13 +67,6 @@ def scheme_apply(procedure, args, env):
     else:
         raise SchemeError("Cannot call {0}".format(str(procedure)))
 
-def to_py_list(args):
-    result = []
-    while args is not nil:
-        result.append(args.first)
-        args = args.second
-    return result
-
 def apply_primitive(procedure, args, env):
     """Apply PrimitiveProcedure PROCEDURE to a Scheme list of ARGS in ENV.
 
@@ -83,7 +76,7 @@ def apply_primitive(procedure, args, env):
     >>> apply_primitive(plus, twos, env)
     4
     """
-    args = to_py_list(args)
+    args = list(args)
     if procedure.use_env:
         args.append(env)
     try:
@@ -236,8 +229,7 @@ def do_define_form(vals, env):
     elif isinstance(target, Pair):
         first = target.first
         if scheme_symbolp(first):
-            vals.first = target.second
-            env.define(first, do_lambda_form(vals, env))
+            env.define(first, do_lambda_form(Pair(target.second, vals.second), env))
             return target.first
         else:
             raise SchemeError("bad function name")
