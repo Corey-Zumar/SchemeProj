@@ -167,6 +167,16 @@ z
 (begin (+ 2 3) (define x 27))
 ; expect x
 
+;;;Q11
+(define (foo x x) (+ x 2))
+; expect Error
+
+(define (bar (x y) (+ x y)))
+; expect Error
+
+(define (bar (x x) (+ x 1)))
+; expect Error
+
 
 (lambda (y z) (* z (+ y z)))
 ; expect (lambda (y z) (* z (+ y z)))
